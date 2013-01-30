@@ -1,0 +1,24 @@
+*note* This is written with python 2.x in mind.
+
+ABOUT//
+
+I've ordered tcp streams to build data in the past by concatenating ordered partial results generated from pcap files  which were already subdivided by time.  Distributed; but not as useful or flexible as using Hadoop/Hive.
+
+After searching for a little while I came across a wonderful project 'Hadoop-Pcap' with a nice pcap deserializer.  The project didn't parse seq/ack fields, so I wrote in the support (viva la open source); the rest became pretty straight forward.
+
+(they've already merged the features I added into the main branch if you'd like to use the upstream version)
+
+https://github.com/RIPE-NCC/hadoop-pcap
+
+These scripts map conversations by normalizing the ip-port combos and use a sliding window 32 packets wide to order streams.  It's not 100% yet; but it's getting closer....  It needs a lot of fleshing out to take account of streams overlapping.  *Whatever you do, don't cross the streams.*
+
+As an aside, I wrote most of this sitting in the Atlanta airport and missed a flight because of it.  Oops.
+
+:p
+
+TO RUN//
+
+load a pcap file, or the test file, into a directory on your hdfs '/pcap' and alter the file paths in run-prototype.hql.
+
+From there you *should* be able to just run hive -f <path-to-dir>/run-prototype.hql 
+The results will end up in a table named apcap_streams
