@@ -10,7 +10,7 @@ After searching for a little while I came across a wonderful project 'Hadoop-Pca
 
 https://github.com/RIPE-NCC/hadoop-pcap
 
-These scripts map conversations by normalizing the ip-port combos and use a sliding window 32 packets wide to order streams.  It's not 100% yet; but it's getting closer....  It needs a lot of fleshing out to take account of streams overlapping.  *Whatever you do, don't cross the streams.*
+These scripts map conversations by normalizing the ip-port combos and use a sliding window 32 packets wide to order streams.  It's not 100% yet; but it's getting closer....  It needs a lot of fleshing out to take account of streams overlapping.  *Whatever you do, don't cross the streams.*  Ordering streams is definitely non-trivial with map-reduce; but by assigning each new conversation an id as it's reduced and assigning each flow within its queue a 'rank' that determines where that flow belongs in the stream, it should be possible to sort the output by conversation/rank id and uncross the streams.  I'll try implementing this trivial solution next, and append it, or throw it out altogether, as necessary. 
 
 As an aside, I wrote most of this sitting in the Atlanta airport and missed a flight because of it.  Oops.
 
