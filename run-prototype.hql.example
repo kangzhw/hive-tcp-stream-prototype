@@ -8,7 +8,7 @@ create external table apcap (ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bi
 
 --Set up reducing table
 
-create table apcap_streams (ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,ip1 string,port1 int,ip2 string,port2 int);
+create table apcap_streams (combo string,ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,flow_id int);
 
 --Actually order the streams.  Be sure to change the file_path for the scripts.
 
@@ -19,4 +19,4 @@ CLUSTER BY combo) map_output
 INSERT OVERWRITE TABLE apcap_streams
 REDUCE map_output.combo,map_output.ts,map_output.tsmicros,map_output.tcp_seq,map_output.tcp_ack,map_output.tcp_flag_syn,map_output.tcp_flag_ack
 USING '/home/hadoop/hive-tcp-stream-prototype/tcp-reduce.py'
-AS (ts,tsmicros,tcp_seq,tcp_ack,tcp_flag_syn,tcp_flag_ack,ip1,port1,ip2,port2) WHERE protocol="TCP";
+AS (combo,ts,tsmicros,tcp_seq,tcp_ack,tcp_flag_syn,tcp_flag_ack,flow_id) WHERE protocol="TCP";
