@@ -20,6 +20,7 @@
 
 import sys
 import atexit
+import operator
 
 '''
 Tracking each flow by combo key with a sliding window set aside for each.
@@ -38,18 +39,18 @@ globalFlowDict = {}
 def exitDump():
         for key in globalFlowDict.keys():
 		'''
-		If there's no starting seq/ack, make an estimate using the smallest seq available
+		If there's no seq/ack offset, make an estimate using the smallest seq/ack available
 		'''
-		if globalFlowDict[key]["seqOffset"] < 1:
-			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=3)
+		if globalFlowDict[key]["seqOffset"] == 0:
+			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=operator.itemgetter(3))
 			globalFlowDict[key]["seqOffset"] = long(globalFlowDict[key]["flows"][0][3])
-		if globalFlowDict[key]["ackOffset"] < 1:
-			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=4)
-			globalFlowDict[key]["ackOffset"] = long(globalFlowDict[key]["flows"][0][4])			
-
-		while len(globalFlowDict[key]["flows"]) > 1:
+		if globalFlowDict[key]["ackOffset"] == 0:
+			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=operator.itemgetter(4))	
+			globalFlowDict[key]["ackOffset"] = long(globalFlowDict[key]["flows"][0][4])
+		
+		while len(globalFlowDict[key]["flows"]) > 0:
 			tmpFlow = globalFlowDict[key]["flows"].pop()
-			tmpFlow.append(str(generateFlowID(tmpFlow,globalFlowDict[key]["seqOffset"],globalFlowDict[key]["ackOffset"])))
+                        tmpFlow.append(str(generateFlowID(tmpFlow,globalFlowDict[key]["seqOffset"],globalFlowDict[key]["ackOffset"])))
 			print '\t'.join(tmpFlow)
 
 #let's not lose track of our last 32 packets.  :)
