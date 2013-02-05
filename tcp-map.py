@@ -11,11 +11,15 @@ import sys
 
 def makeIpPortCombo(src,src_port,dst,dst_port):
         combo = "NULL"
+	'''direction is set to store flow information lost in normalization'''
+	direction = "NULL"
 	if src_port > dst_port:
                 combo = src+":"+src_port+":"+dst+":"+dst_port
+		direction = "dst"
         else:
                 combo = dst+":"+dst_port+":"+src+":"+src_port
-	return combo
+		direction = "src"
+	return [combo,direction]
 
 for line in sys.stdin:
 	line = line.strip()
@@ -35,4 +39,4 @@ for line in sys.stdin:
 
 	combo = makeIpPortCombo(src,src_port,dst,dst_port)
 	
-	print "\t".join([combo,ts,tsmicros,tcp_seq,tcp_ack,tcp_flag_syn,tcp_flag_ack,protocol])
+	print "\t".join([combo[0],ts,tsmicros,tcp_seq,tcp_ack,tcp_flag_syn,tcp_flag_ack,protocol,combo[1]])
