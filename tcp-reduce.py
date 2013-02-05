@@ -60,13 +60,12 @@ def generateFlowID(flow,seqOffset,ackOffset):
 			if flow[7] == "src":
 				return (long(flow[3])-seqOffset[0])+(long(flow[4])-ackOffset[0])
 			else:
-				return long(flow[4])-seqOffset[0]+(long(flow[3])-ackOffset[0])
+				return (long(flow[4])-seqOffset[0])+(long(flow[3])-ackOffset[0])
 		else:
 			if flow[7] == "dst":
-				return long(flow[3])-seqOffset[0]
-			else:
-				return long(flow[4])-seqOffset[0]
-				
+				return (long(flow[3])-seqOffset[0])+(long(flow[4])-ackOffset[0])
+                        else:
+                                return (long(flow[4])-seqOffset[0])+(long(flow[3])-ackOffset[0])	
 
 def registerFlow(line):
 	line = line.strip()
