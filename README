@@ -1,5 +1,3 @@
-*note* This is written with python 2.x in mind.
-
 ABOUT//
 
 I've ordered tcp streams to build data in the past by concatenating ordered partial results generated from pcap files  which were already subdivided by time.  Distributed; but not as useful or flexible as using Hadoop/Hive.
@@ -10,13 +8,7 @@ After searching for a little while I came across a wonderful project 'Hadoop-Pca
 
 https://github.com/RIPE-NCC/hadoop-pcap
 
-These scripts map conversations by normalizing the ip-port combos and use a sliding window 32 packets wide to order streams.  It's not 100% yet; but it's getting closer....  It needs a lot of fleshing out to take account of streams overlapping.  *Whatever you do, don't cross the streams.*  
-
-Ordering streams is definitely non-trivial with map-reduce; but by assigning each new conversation an id as it's reduced and assigning each flow within its queue a 'rank' that determines where that flow belongs in the stream, it should be possible to sort the output by conversation/rank id and uncross the streams.  I'll try implementing this trivial solution next, and append it, or throw it out altogether, as necessary. 
-
-As an aside, I wrote most of this sitting in the Atlanta airport and missed a flight because of it.  Oops.
-
-:p
+This version is following streams by calculating relative sequence/acknowlegement numbers and adding them up to produce a 'flow_id' which, of course, increments as information is passed from src->dst and vice versa.  So far, on my small sample sets, this method is working in cases where the start of a stream is clearly delimited.  Once I find an adequate way to create an estimated relative seq/ack for broken streams I'll focus on testing the scripts with more varied data until they break.
 
 TO RUN//
 
