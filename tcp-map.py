@@ -4,7 +4,6 @@
 	Morgan Phillips @2013
 	winter2718@gmail.com
 
-	Don't forget, this is a hacked up prototype. :]
 '''
 
 import sys

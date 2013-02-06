@@ -32,7 +32,7 @@ def exitDump():
 			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=operator.itemgetter(3))
 			globalFlowDict[key]["seqOffset"] = [long(globalFlowDict[key]["flows"][0][3]),globalFlowDict[key]["flows"][0][7]]
 		if globalFlowDict[key]["ackOffset"][0] == 0:
-			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=operator.itemgetter(4))	
+			globalFlowDict[key]["flows"] = sorted(globalFlowDict[key]["flows"],key=operator.itemgetter(3))	
 			globalFlowDict[key]["ackOffset"] = [long(globalFlowDict[key]["flows"][0][4]),globalFlowDict[key]["flows"][0][7]]
 	
 		while len(globalFlowDict[key]["flows"]) > 0:
