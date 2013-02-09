@@ -15,6 +15,4 @@ TO RUN//
 load a pcap file, or the test file, into a directory on your hdfs '/pcap' and alter the file paths in run-prototype.hql.
 
 From there you *should* be able to just run hive -f <path-to-dir>/run-prototype.hql 
-The results will end up in a table named apcap_streams.  To see the output in sorted form query with:
-
-select * from apcap_streams sort by combo,flow_id;
+The results will end up in a table named apcap_streams.

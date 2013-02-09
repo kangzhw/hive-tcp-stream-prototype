@@ -4,13 +4,13 @@ add file /home/hadoop/hive-tcp-stream-prototype/tcp-reduce.py;
 
 --Load packet data into table 'apcap' from hdfs location '/pcap'
 
-CREATE EXTERNAL TABLE apcap (ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,protocol string,src string,src_port int,dst string,dst_port int,len int,ttl int) 
+CREATE EXTERNAL TABLE IF NOT EXISTS apcap (ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,protocol string,src string,src_port int,dst string,dst_port int,len int,ttl int) 
 ROW FORMAT SERDE 'net.ripe.hadoop.pcap.serde.PcapDeserializer' STORED AS INPUTFORMAT 'net.ripe.hadoop.pcap.io.PcapInputFormat' 
 OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat' LOCATION '/pcap';
 
 --Set up reducing table
 
-CREATE TABLE apcap_streams (combo string,ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,direction string,flow_id int);
+CREATE TABLE IF NOT EXISTS apcap_streams (combo string,ts bigint,tsmicros bigint,tcp_seq bigint,tcp_ack bigint,tcp_flag_syn string,tcp_flag_ack string,direction string,flow_id int);
 
 --Actually order the streams.  Be sure to change the file_path for the scripts.
 
@@ -23,3 +23,7 @@ INSERT OVERWRITE TABLE apcap_streams
 REDUCE map_output.combo,map_output.ts,map_output.tsmicros,map_output.tcp_seq,map_output.tcp_ack,map_output.tcp_flag_syn,map_output.tcp_flag_ack,map_output.direction
 USING '/home/hadoop/hive-tcp-stream-prototype/tcp-reduce.py'
 AS (combo,ts,tsmicros,tcp_seq,tcp_ack,tcp_flag_syn,tcp_flag_ack,direction,flow_id) WHERE protocol="TCP";
+
+--Sort the apcap_streams table by combo and flow id to order the streams
+
+INSERT OVERWRITE TABLE apcap_streams SELECT * FROM apcap_streams SORT BY combo,flow_id;
